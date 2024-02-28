@@ -10,15 +10,15 @@ const Login = () => {
   const dispatch = useDispatch();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading,setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const handleLogin = async () => {
     try {
       console.log(process.env.NEXT_PUBLIC_MAIN_API_URL);
-      
+      setIsLoading(true);
       const response = await axios.post('v1/auth/login', { username, password });
       const token = response.data.token;
-      console.log(token);
-      
+      setIsLoading(false)
       dispatch(setToken(token));
       localStorage.setItem('token', token);
       router.replace('/');
@@ -37,7 +37,7 @@ const Login = () => {
       <TextField sx={{marginTop:"15px"}} type="text" placeholder="Username" onChange={(e) => setUsername(e.target.value)} />
       <TextField sx={{marginTop:"15px"}} type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
       {error && <Typography sx={{color:"red"}}>{error}</Typography>}
-      <Button sx={{marginTop:"15px",color:"white"}} variant='contained' onClick={handleLogin}>Login</Button>
+      <Button disabled={isLoading} sx={{marginTop:"15px",color:"white"}} variant='contained' onClick={handleLogin}>Login</Button>
     </Box>
   );
 };
